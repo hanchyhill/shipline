@@ -1,10 +1,13 @@
 var basicInfo = require('./resource/infoConfig.json');
-var stationID = new Map(basicInfo.stationID);
-var wCode = new Map(basicInfo.wCode);
-var wDir = new Map(basicInfo.wDir);
-var wScale = new Map(basicInfo.wScale);
+let selectedID = basicInfo.selectedID;
+
+let stationID = new Map(selectedID.map(v=>[v[0],v[2]]));
+let wCode = new Map(basicInfo.wCode);
+let wDir = new Map(basicInfo.wDir);
+let wScale = new Map(basicInfo.wScale);
 
 export {
+  selectedID,
   stationID,
   wCode,
   wDir,

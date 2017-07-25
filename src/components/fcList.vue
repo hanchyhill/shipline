@@ -58,10 +58,12 @@
           <mu-menu-item v-for="x of wScaleList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
       </mu-list-item>
+      <!--
       <mu-list-item title="能见度" :disableRipple="true">
         <mu-text-field hintText="能见度1" type="number" v-model="selectedCode[7]"></mu-text-field>
         <mu-text-field hintText="能见度2" type="number" v-model="selectedCode[8]"></mu-text-field>
-      </mu-list-item>
+      </mu-list-item> 
+      -->
       <mu-list-item @click.native="open = false" title="关闭"></mu-list-item>
     </mu-list>
   </mu-drawer>
@@ -69,19 +71,14 @@
 </template>
 
 <script>
-import { stationID, wCode, wDir, wScale } from '../util.js';
+import { stationID, wCode, wDir, wScale, selectedID } from '../util.js';
 export default {
   name: 'fcList',
   props: {
       'fcTime':String,
-      'fcCode': Array,
+      'oriCode': Array,
     },
-  data () {
-//20170606120002400
-    //console.log(this.fcCode);
-    
-    
-    
+  data(){
     return {
       stationID,
       wCode,
@@ -95,6 +92,21 @@ export default {
     }
   },
   computed:{
+    fcCode(){
+      let code = Array.from(this.oriCode);
+      if(this.oriCode.length==0) return [];
+      let selectedCode = selectedID.map((v)=>{
+        let item = this.oriCode.find(i=>{
+            return i[0] == v[1];
+        }); 
+        if(item.length){
+          item = item.concat([]);// concat深复制，防止引用。
+          item[0] = v[0];
+        } 
+        return item;
+      });
+      return selectedCode;
+    },
     transList:function(){
       //console.log(this.stationID.get("03021"));
       if(!this.fcCode) return ({});

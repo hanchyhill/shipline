@@ -38,12 +38,12 @@
     <mu-tab value="tab3"><mu-icon value="filter_3" color="red"></mu-icon>时次3</mu-tab>
   </mu-tabs>
 
-  <fc-list :fc-code="text" v-show="activeTab === 'tab1'" :fc-time="fcTime[0]" ref="fc0"></fc-list>
+  <fc-list :ori-code="text" v-show="activeTab === 'tab1'" :fc-time="fcTime[0]" ref="fc0"></fc-list>
   <div v-show="activeTab === 'tab2'" >
-    <fc-list :fc-code="text2" :fc-time="fcTime[1]" ref="fc1"></fc-list>
+    <fc-list :ori-code="text2" :fc-time="fcTime[1]" ref="fc1"></fc-list>
   </div>
   <div v-show="activeTab === 'tab3'">
-    <fc-list :fc-code="text3" :fc-time="fcTime[2]" ref="fc2"></fc-list>
+    <fc-list :ori-code="text3" :fc-time="fcTime[2]" ref="fc2"></fc-list>
   </div>
   </mu-col>
   <mu-col class="space-col"></mu-col>
