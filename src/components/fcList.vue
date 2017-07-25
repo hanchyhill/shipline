@@ -99,6 +99,8 @@ export default {
       //console.log(this.stationID.get("03021"));
       if(!this.fcCode) return ({});
       let list = this.fcCode.map(item=>{
+        item[7] = Math.min(this.wCode.get(item[4]).v1,this.wCode.get(item[9]).v1);
+        item[8] = Math.max(this.wCode.get(item[4]).v2,this.wCode.get(item[9]).v2);
         let infoW = item[4]===item[9]?this.wCode.get(item[4]).cn:this.wCode.get(item[4]).cn+'转'+this.wCode.get(item[9]).cn;
         let infoD = item[5]===item[10]?this.wDir.get(item[5]).cn:this.wDir.get(item[5]).cn+'转'+this.wDir.get(item[10]).cn;
         //一旦有不在范围内的item数值，将会抛出错误

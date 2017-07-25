@@ -1,10 +1,13 @@
 ////api服务器
-var express = require('express');
-var apiServer = express();
-var bodyParser = require('body-parser');
-var getAllData = require("./shipline/testApi.js").getAllData;
-var getFtpData = require("./shipline/ftpTest.js").getFtpData;
-var ejsHTML = require("./ejs/ejs-generator-promise.js").ejsHTML;
+const express = require('express');
+const apiServer = express();
+const bodyParser = require('body-parser');
+const getAllData = require("./shipline/testApi.js").getAllData;
+const getFtpData = require("./shipline/ftpTest.js").getFtpData;
+const ejsHTML = require("./shipline/ejs-generator-promise.js").ejsHTML;
+const writeSMB2 = require("./shipline/smb2write.js").writeSMB2;
+
+
 apiServer.use(bodyParser.urlencoded({ extended: true }));
 apiServer.use(bodyParser.json());
 var apiRouter = express.Router();
@@ -55,6 +58,11 @@ apiRouter.route('/:apiName') //post数据
 
   ejsHTML(fcdata)
   .then(html=>{
+    return writeSMB2(html)
+  }
+  )
+  .then(info=>{
+    console.log(info);
     res.send(JSON.stringify(resData));
   })
   .catch(err=>{
