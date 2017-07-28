@@ -29,7 +29,7 @@
       <% if(fcTable.fc){%>
         <% fcTable.fc.forEach(item=>{%>
           <tr class="fc-item">
-            <th><%= item.loc %></th><td><%= item.infoD %></td><td><%= item.infoW %></td><td><%= item.infoKTS %></td>
+            <th><%= item.loc %></th><td><%= item.infoW %></td><td><%= item.infoD %></td><td><%= item.infoKTS %></td>
             <td><%= item.infoGust %></td><td><%= item.infoWave %></td><td><%= item.infoV %></td>
           </tr>
         <% }) %>
@@ -37,7 +37,7 @@
     </table>
     <% }) %>
     <% } %>
-  <p>发布时间：2017/5/15 6:00:00</p>
+  <p>发布时间：<% let k = new Date(); %><%=k%></p>
   </div>
 </body>
 </html>

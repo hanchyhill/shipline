@@ -28,8 +28,12 @@
     </mu-select-field>
     <mu-raised-button class="demo-raised-button"
     @click="searchData" label="查询" icon="search" primary></mu-raised-button>
-    <mu-raised-button class="demo-raised-button" label="发布预报" icon="cloud_upload" secondary
-    @click="convertPushData"></mu-raised-button>
+    <span id="push-wrap">
+      <mu-text-field label="发布时间" labelFloat class="pushDate" v-model="pushFcTime"/>
+      <mu-raised-button class="demo-raised-button" label="发布预报" icon="cloud_upload" secondary
+      @click="convertPushData"></mu-raised-button>
+      
+    </span>
   </div>
 
   <mu-tabs class="time-view-tabs" :value="activeTab" @change="handleTabChange">
@@ -71,6 +75,7 @@
     <mu-flat-button slot="actions" @click="closeSelectDialog(false)" primary label="取消"></mu-flat-button>
     <mu-flat-button slot="actions" primary @click="closeSelectDialog(true)" label="确定"></mu-flat-button>
   </mu-dialog>
+  <post-fc-dialog :trigger-dialog="postFeedBackDialog"></post-fc-dialog>
 </div>
 </template>
 
@@ -79,6 +84,7 @@ import axios from 'axios';
 //import { stationID, wCode, wDir, wScale } from './util.js';
 import FcList from './components/fcList.vue';
 import MainHeader from './components/header.vue';
+import PostFcDialog from './components/postFcDialog.vue';
 //var promisePolyfill = require('es6-promise').Promise;
 //console.log(stationID.keys());
 //console.log(Promise);
@@ -86,14 +92,18 @@ import MainHeader from './components/header.vue';
 
 export default {
   name: 'app',
-  components:{MainHeader,FcList,},
+  components:{MainHeader,FcList,PostFcDialog,},
   data:function(){
     let fitTime = new Date();
-    let fitHour = 5<fitTime.getHours()&&fitTime.getHours()<16 ? '00':'12';//05时至16时取世界时00时，16时之后取12时
+    let fitHour = 4<fitTime.getHours()&&fitTime.getHours()<15 ? '00':'12';//05时至16时取世界时00时，16时之后取12时
     let iniTime = new Date();
     let selectedDate = iniTime.getFullYear().toString() + '-' +
                        (Array(2).join('0') + (iniTime.getMonth()+1)).slice(-2) + '-' +
                        (Array(2).join('0') + iniTime.getDate()).slice(-2);
+    let pushDate = iniTime.getFullYear().toString() + '/' +
+                       (Array(2).join('0') + (iniTime.getMonth()+1)).slice(-2) + '/' +
+                       (Array(2).join('0') + iniTime.getDate()).slice(-2);
+    let pushHour = 4<fitTime.getHours()&&fitTime.getHours()<15 ? '6:00:00':'16:00:00';
     return {
       text:[],
       text2:[],
@@ -109,6 +119,8 @@ export default {
       selectDialog:false,
       posterList:[],
       selectTime:[-1,-1,-1],
+      postFeedBackDialog:false,
+      pushFcTime:`${selectedDate.replace(/-/g,'/')} ${pushHour}`,
     }
   },
   created(){
@@ -223,6 +235,10 @@ export default {
         this.popUpText = '上传成功，页面已生成';
         this.topPopup = true;
         console.log(res.data);
+        this.postFeedBackDialog = !this.postFeedBackDialog;
+        window.open(
+        "http://10.12.12.221:8080/special/Fcst/bh.html"
+        );
       })
       .catch((error)=>{
         console.log(error);
@@ -260,7 +276,9 @@ export default {
   }
   .shift-date-picker.mu-date-picker{
     vertical-align: middle;
-    
+  }
+  .pushDate{
+    vertical-align: top;
   }
   .mu-tabs.time-view-tabs{
     background-color: transparent;
@@ -280,5 +298,9 @@ export default {
   align-items: center;
   justify-content: center;
   max-width: 375px;
-}
+  }
+
+  #push-wrap{
+    margin-left:20px;
+  }
 </style>

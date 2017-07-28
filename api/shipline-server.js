@@ -15,6 +15,8 @@ var fs = require('fs');
 apiRouter.route('/:apiName')
 .get((req, res)=>{
   //console.log([req.query.time,req.query.fc]);
+  //req.params.apiName
+  console.log('get:'+req.params.apiName);
   let method = req.query.method;
   switch (method){
     case 'http':
@@ -47,8 +49,9 @@ apiRouter.route('/:apiName')
 
 apiRouter.route('/:apiName') //post数据
 .post((req, res)=>{
+  console.log('post:'+req.params.apiName);
   //console.log([req.query.time,req.query.fc]);
-  console.log(req.url);
+  //console.log(req.url);
   //console.log(req.body);
   let fcdata = req.body.fcdata;
 

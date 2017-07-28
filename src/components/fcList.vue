@@ -1,6 +1,21 @@
 <template>
   <div class="hello">
-    <div id="forcaster-time">时效: {{timeFormat}}</div>
+    <div class="forcaster-time">
+    时效
+    <mu-date-picker class="shift-date-picker list-date-picker" underlineClass="list-date-underline"
+    inputClass="list-date-input" autoOk container="inline" 
+    hintText="选择日期" format="YYYY年MM月DD日"  v-model="sTime"></mu-date-picker>
+    
+    <mu-text-field :underlineShow="false" class="list-hour" v-model="selectDate[0][1]"/>时
+    
+    <span>至</span>
+    <mu-date-picker class="shift-date-picker list-date-picker" underlineClass="list-date-underline"
+    inputClass="list-date-input" autoOk container="inline" 
+    hintText="选择日期" format="YYYY年MM月DD日" 
+    :underlineShow="true" v-model="eTime"></mu-date-picker>
+    <mu-text-field :underlineShow="false" class="list-hour" v-model="selectDate[1][1]"/>时
+    <!--<br><span>时效: {{timeFormat}}</span>-->
+    </div>
     <mu-table :showCheckbox="false">
       <mu-thead slot="header">
         <mu-tr>
@@ -79,6 +94,8 @@ export default {
       'oriCode': Array,
     },
   data(){
+    let selectDate = this.formatDate();
+
     return {
       stationID,
       wCode,
@@ -87,15 +104,18 @@ export default {
       open:false,
       selectedIndex:0,
       selectedCode:this.length?this.fcCode[0]:["03005", 128, 24, 0, 12, 45, 6, 1, 3, 10, 45, 5],
+      selectDate,
       //localTimeStart,
       //localTimeEnd,
+      sTime:'',
+      eTime:'',
     }
   },
   computed:{
     fcCode(){
-      let code = Array.from(this.oriCode);
+      //let code = Array.from(this.oriCode);
       if(this.oriCode.length==0) return [];
-      let selectedCode = selectedID.map((v)=>{
+      let selectedCode = selectedID.reduce((a,v)=>{
         let item = this.oriCode.find(i=>{
             return i[0] == v[1];
         }); 
@@ -103,8 +123,10 @@ export default {
           item = item.concat([]);// concat深复制，防止引用。
           item[0] = v[0];
         } 
-        return item;
-      });
+        a.push(item)
+        return a;
+        //console.log(a);
+      },[]);
       return selectedCode;
     },
     transList:function(){
@@ -181,6 +203,7 @@ export default {
       //this.popUpData();
       return fcItem;
     },
+    
     startTime(){
       /* 转换时间fcTime */
       let fcTimeArray = [];
@@ -203,12 +226,14 @@ export default {
           let date = (Array(2).join('0') + time.getDate()).slice(-2);
           let hour = (Array(2).join('0') + time.getHours()).slice(-2);
           return year + '年' + month + '月' + date + '日' + hour + '时';
-        })
+        });
       }
       return timeFormat;
     },
     timeFormat(){
-      return this.startTime[0] + '至' + this.startTime[1]
+      return `${this.sTime}${this.selectDate[0][1]}时至${this.eTime}${this.selectDate[1][1]}时`;
+      
+      //return this.startTime[0] + '至' + this.startTime[1]
     },
   },//computed
   methods: {
@@ -221,12 +246,45 @@ export default {
       //console.log(this.fcCode[index]);
       this.open = !this.open;
     },
+    formatDate(){
+      let fcTimeArray = [];
+      let localTimeStart = null;
+      let localTimeEnd = null;
+      let fcTime = this.fcTime;
+      //console.log(fcTime);
+      let timeFormat = ['',''];
+      if(fcTime.length>16){
+        fcTimeArray = [fcTime.slice(0,4),fcTime.slice(4,6),fcTime.slice(6,8),fcTime.slice(8,10),fcTime.slice(13,15)]
+                      .map(v=>Number(v));//年，月，日，世界时，预报时效
+        //console.log(fcTimeArray);
+        localTimeStart = new Date(fcTimeArray[0], fcTimeArray[1] - 1,
+                    fcTimeArray[2], fcTimeArray[3] + fcTimeArray[4] - 24 + 8);
+        localTimeEnd = new Date(fcTimeArray[0], fcTimeArray[1] - 1,
+                    fcTimeArray[2], fcTimeArray[3] + fcTimeArray[4] + 8);
+        timeFormat = [localTimeStart,localTimeEnd].map(time=>{
+          let year = time.getFullYear();
+          let month = (Array(2).join('0') + (time.getMonth()+1)).slice(-2);
+          let date = (Array(2).join('0') + time.getDate()).slice(-2);
+          let hour = (Array(2).join('0') + time.getHours()).slice(-2);
+          return [year + '年' + month + '月' + date+'日',hour ];
+        });
+      }
+      return timeFormat;
+      //return [localTimeStart,localTimeEnd];
+    },
     /*popUpData(){
       console.log('watch');
       this.$emit('popUpData', 'test');
     },*/
   },//methods结束
   watch:{
+    fcTime(){
+      this.selectDate = this.formatDate();
+    },
+     selectDate(){
+      this.sTime = this.selectDate[0][0];
+      this.eTime = this.selectDate[1][0];
+    },
     /*transList:{
       deep:true,
       handler:function(){
@@ -249,7 +307,27 @@ export default {
   font-size:16px;
 }
 
-#forcaster-time{
+.forcaster-time{
   text-align: center;
 }
+
+.list-date-picker{
+  width:120px;
+}
+.list-hour{
+  width:30px;
+  vertical-align:middle;
+}
+
+.list-date-picker{
+    position: relative;
+    top:8px;
+  }
+  .list-hour{
+    position: relative;
+    top:2px;
+  }
+  .list-hour .mu-text-field-input{
+    color:#7E57C2;
+  }
 </style>
