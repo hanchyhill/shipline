@@ -16,7 +16,7 @@
     <mu-text-field :underlineShow="false" class="list-hour" v-model="selectDate[1][1]"/>时
     <!--<br><span>时效: {{timeFormat}}</span>-->
     </div>
-    <mu-table :showCheckbox="false">
+    <mu-table :showCheckbox="false" class="fc-table">
       <mu-thead slot="header">
         <mu-tr>
           <mu-th tooltip="站点">站点</mu-th>

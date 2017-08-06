@@ -6,6 +6,7 @@ const getAllData = require("./shipline/testApi.js").getAllData;
 const getFtpData = require("./shipline/ftpTest.js").getFtpData;
 const ejsHTML = require("./shipline/ejs-generator-promise.js").ejsHTML;
 const writeSMB2 = require("./shipline/smb2write.js").writeSMB2;
+const readRemoteFc = require("./shipline/smb2readFc.js").readRemoteFc;
 
 
 apiServer.use(bodyParser.urlencoded({ extended: true }));
@@ -17,34 +18,56 @@ apiRouter.route('/:apiName')
   //console.log([req.query.time,req.query.fc]);
   //req.params.apiName
   console.log('get:'+req.params.apiName);
-  let method = req.query.method;
-  switch (method){
-    case 'http':
-      getAllData(req.query.time,req.query.fc)
-      .then(resData=>{
-        res.send(JSON.stringify(resData));
-      })
-      .catch(error=>{
-        console.log(error);
-        res.send(JSON.stringify(error));
-      })
+  res.set('Access-Control-Allow-Origin', '*');
+  switch (req.params.apiName){
+    case 'getNorthLineFc': // 获取制作的北航线预报
+      readRemoteFc()
+        .then(data=>{
+          res.set('Content-Type', 'text/html');
+          
+          res.send(data);
+          //console.log(data);
+        })
+        .catch(err=>{
+          console.log(err);
+          res.status(500).send('获取北航线预报错误!');
+        })
       break;
-
-    case 'ftp':
-      //console.log('server');
-       getFtpData(req.query.time,req.query.fc)
-      .then(resData=>{
-        res.send(JSON.stringify(resData));
-        return;
-      })
-      .catch(error=>{
-        console.log(error);
-        res.send(JSON.stringify(error));
-      })
+    case 'getData': // 获取原始报文
+      let method = req.query.method;
+      switch (method){
+        case 'http':
+          getAllData(req.query.time,req.query.fc)
+          .then(resData=>{
+            res.send(JSON.stringify(resData));
+          })
+          .catch(error=>{
+            console.log(error);
+            res.send(JSON.stringify(error));
+          })
+          break;
+        
+        case 'ftp':
+          //console.log('server');
+           getFtpData(req.query.time,req.query.fc)
+          .then(resData=>{
+            res.send(JSON.stringify(resData));
+            return;
+          })
+          .catch(error=>{
+            console.log(error);
+            res.send(JSON.stringify(error));
+          })
+          break;
+        default:
+          next();
+      }
       break;
     default:
       next();
+
   }
+  
 });
 
 apiRouter.route('/:apiName') //post数据

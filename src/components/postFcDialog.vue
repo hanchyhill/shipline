@@ -2,15 +2,12 @@
    <mu-dialog :open="isShow" title="发布成功">
     点击查看：
     <div>
-      12121地址:<a href="http://10.12.12.221:8080/special/Fcst/bh.html" target="_blank" rel="noopener noreferrer">发布地址</a>
+      <a href='api/getNorthLineFc' target="_blank" rel="noopener noreferrer">本地文件</a><br>
+      <a href="http://10.12.12.221:8080/special/Fcst/bh.html" target="_blank" rel="noopener noreferrer">12121发布地址</a>
     </div>
     <br>
     <div>
-      本地地址firefox, chrome, edge:<mu-text-field fullWidth v-model="localURL"/>
-      <a :href="localURL2">发布地址</a>
-    </div>
-    <div>
-      本地地址IE:<mu-text-field fullWidth v-model="localURL2"/>
+      本地地址:<mu-text-field fullWidth v-model="localURL2"/>
     </div>
     
     <mu-flat-button slot="actions" primary @click="changeShow(false)" label="确定"></mu-flat-button>
