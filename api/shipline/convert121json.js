@@ -1,18 +1,22 @@
 function convertJSON(data){
   let fc = data.fc;
   let pushTime = data.pushTime;
-  let array121 = fc.map(list=>list.map(v=>{
+  let array121 = fc.map(list=>{
+    //console.log(list);
+    // console.log(list.fc);
+    return list.fc.map(v=>{
+      
       return {
-        visibility: infoV,
+        visibility: v.infoV,
         seaarea_name: v.loc,
-        ddatetime: v.time,
+        ddatetime: list.time,
         waveheight: v.infoWave,
         wind_direction: v.infoD,
         weather_phenomena: v.infoW,
         wind_power: v.infoKTS,
         gust: v.infoGust,
       }
-    })
+    })}
   );
   let format121={
     error:false,

@@ -7,12 +7,13 @@ const getFtpData = require("./shipline/ftpTest.js").getFtpData;
 const ejsHTML = require("./shipline/ejs-generator-promise.js").ejsHTML;
 const writeSMB2 = require("./shipline/smb2write.js").writeSMB2;
 const readRemoteFc = require("./shipline/smb2readFc.js").readRemoteFc;
-
+const convert121 = require("./shipline/convert121json.js").convertJSON;
+const fs = require('fs');
 
 apiServer.use(bodyParser.urlencoded({ extended: true }));
 apiServer.use(bodyParser.json());
 var apiRouter = express.Router();
-var fs = require('fs');
+
 apiRouter.route('/:apiName')
 .get((req, res)=>{
   //console.log([req.query.time,req.query.fc]);
@@ -77,14 +78,31 @@ apiRouter.route('/:apiName') //post数据
   //console.log(req.url);
   //console.log(req.body);
   let fcdata = req.body.fcdata;
+  let fileTime = fcdata.fileNameTime;
+  
 
   let resData = {
     info:'OK'
   };
 
+  try{
+    let json121 = convert121(fcdata);
+    writeSMB2(json121,['bhx.json'].concat(`bhx${fileTime}.json`));
+    fs.writeFile('../bhx/bhx.json', json121, (err)=>{if (err) {
+       return console.error(err);
+    }});
+  }
+  catch(err){
+    console.log(err);
+  }
+  
+
   ejsHTML(fcdata)
   .then(html=>{
-    return writeSMB2(html)
+    fs.writeFile('../bhx/bhx.html', html, (err)=>{if (err) {
+       return console.error(err);
+    }});
+    return writeSMB2(html,['bhx.html'].concat(`bhx${fileTime}.html`));
   }
   )
   .then(info=>{

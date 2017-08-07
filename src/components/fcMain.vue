@@ -215,7 +215,9 @@ export default {
         }
       });
       //console.log(dataArray);
-      this.pushData({fc:dataArray,pushTime:this.pushFcTime});
+      this.pushData({fc:dataArray,
+      pushTime:this.pushFcTime,
+      fileNameTime:this.fileNameTime});
     },
     pushData(data){
       /* 上传预报数据 */
@@ -228,9 +230,7 @@ export default {
         this.topPopup = true;
         console.log(res.data);
         // this.postFeedBackDialog = !this.postFeedBackDialog; // 打开弹窗
-        window.open(
-        "http://10.12.12.221:8080/special/Fcst/bh.html"
-        );
+        // window.open("http://10.12.12.221:8080/special/Fcst/bh.html");
         this.$router.push('showfc');
       })
       .catch((error)=>{
@@ -259,6 +259,12 @@ export default {
       let emptyData = {index:-1,time:'不变 Not Modified'};
       list.push(emptyData);
       return list;
+    },//
+    fileNameTime(){
+      let fcTime = this.pushFcTime.replace(/\//g,'');
+      console.log(fcTime);
+      let fileName = fcTime.substring(2,8) + (fcTime.charAt(9)=='6'?'08':'20');
+      return fileName;
     },//
   },//计算属性结束
 }
