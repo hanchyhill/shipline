@@ -12,7 +12,7 @@ async function convertHTMLasync(fcArray){
     let ejsTempl = await readFileP(ejsPath,'utf-8');
     //let jsonRaw = await readFileP(jsonPath,'utf-8');
     //let fcArray = JSON.parse(jsonRaw);
-    let html = ejs.render(ejsTempl,{fcArray:fcArray});
+    let html = ejs.render(ejsTempl,{fcArray:fcArray.fc,pushTime:fcArray.pushTime});
     fs.writeFile(__dirname + '/bhx.html',html,(err)=>{
       if (err) throw err;
       console.log('It\'s saved!');

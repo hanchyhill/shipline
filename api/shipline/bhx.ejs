@@ -6,11 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <style>
       body{font-family:"Arial","Microsoft YaHei","黑体","STXihei","华文细黑";background-color:rgb(244, 236, 216);}
-      h1{color: red;text-align: center;}hr{border-top:4px solid red;}
-      #wrap{width:690px;text-align: center;margin:0 auto;}
+      h1{color: red;text-align: center;letter-spacing:5px;font-size: 38px;}
+      hr{border-top:4px solid red;}
       table,table tr th, table tr td { border:1px solid black; }
-      table{margin-top:20px;}table caption {color: blue;font-size: 20px;}
+      #wrap{display: flex;flex-direction: column;align-items: center;justify-content: center;}
+      #wrap table{min-width: 670px;}
+      #wrap{width:800px;text-align: center;margin:0 auto;}
+      table{margin-top:20px;}table caption {color: blue;font-size: 25px;}
       .fc-item th{color:blue;border-color:black;font-weight:normal; }
+      .push-time{color: blue;font-size: 25px;}
     </style>
   </head>
   <body>
@@ -37,7 +41,8 @@
     </table>
     <% }) %>
     <% } %>
-  <p>发布时间：<% let k = new Date(); %><%=k%></p>
+  <p class="push-time">发布时间：<%=pushTime%></p>
+  <p>时间戳：<% let k = new Date(); %><%=k%></p>
   </div>
 </body>
 </html>

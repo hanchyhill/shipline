@@ -25,7 +25,7 @@
           <mu-th tooltip="天气2">风速(KTS)</mu-th>
           <mu-th tooltip="天气2">阵风(KTS)</mu-th>
           <mu-th tooltip="天气2">浪高(M)</mu-th>
-          <mu-th tooltip="天气2">能见度（KM）</mu-th>           
+          <mu-th tooltip="天气2">能见度（KM）</mu-th>       
         </mu-tr>
       </mu-thead>
       <mu-tbody>
@@ -109,12 +109,26 @@ export default {
       //localTimeEnd,
       sTime:'',
       eTime:'',
+      fcCode:this.transOri2Fc(),
     }
   },
   computed:{
+    /*
     fcCode(){
       //let code = Array.from(this.oriCode);
-      if(this.oriCode.length==0) return [];
+      if(this.oriCode.length==0) return [] [[ "02001", 119.7, 38.7,,,,,,,,,,],
+[ "02002", 121.33, 38.12,,,,,,,,,,],
+[ "02003", 123.27, 38.62,,,,,,,,,,],
+[ "02004", 123.7, 36.3,,,,,,,,,,],
+[ "02005", 123.5, 33.7,,,,,,,,,,],
+[ "02006", 125.77, 30.78,,,,,,,,,,],
+[ "02007", 123.75, 26.93,,,,,,,,,,],
+[ "020072", 123.75, 26.93,,,,,,,,,,],
+[ "02009", 122.62, 23.47,,,,,,,,,,],
+[ "03005", 128, 24,,,,,,,,,,],
+[ "030052", 128, 24,,,,,,,,,,],
+[ "020062", 125.77, 30.78,,,,,,,,,,],
+[ "03003", 129.3, 34.5,,,,,,,,,,]];
       let selectedCode = selectedID.reduce((a,v)=>{
         let item = this.oriCode.find(i=>{
             return i[0] == v[1];
@@ -125,47 +139,69 @@ export default {
         } 
         a.push(item)
         return a;
-        //console.log(a);
+        // console.log(a);
       },[]);
+      //for (let item of selectedCode){
+      //  console.log(item);
+      //}
+      // console.log(selectedCode);
+      // console.log('test')
       return selectedCode;
-    },
+    },*/
     transList:function(){
+       // console.log('test');
       //console.log(this.stationID.get("03021"));
       if(!this.fcCode) return ({});
-      let list = this.fcCode.map(item=>{
-        item[7] = Math.min(this.wCode.get(item[4]).v1,this.wCode.get(item[9]).v1);
-        item[8] = Math.max(this.wCode.get(item[4]).v2,this.wCode.get(item[9]).v2);
-        let infoW = item[4]===item[9]?this.wCode.get(item[4]).cn:this.wCode.get(item[4]).cn+'转'+this.wCode.get(item[9]).cn;
-        let infoD = item[5]===item[10]?this.wDir.get(item[5]).cn:this.wDir.get(item[5]).cn+'转'+this.wDir.get(item[10]).cn;
-        //一旦有不在范围内的item数值，将会抛出错误
-        let infoV = item[7]===item[8]?item[7]:item[7]+'-'+item[8];
-        let infoKTS = item[6]===item[11]?this.wScale.get(item[6]).KTS:this.wScale.get(item[6]).KTS+'转'+this.wScale.get(item[11]).KTS;
-        let infoGust = item[6]===item[11]?this.wScale.get(item[6]).gust:this.wScale.get(item[6]).gust+'转'+this.wScale.get(item[11]).gust;
-        let infoWave = item[6]===item[11]?this.wScale.get(item[6]).wave:this.wScale.get(item[6]).wave+'转'+this.wScale.get(item[11]).wave;
-        return {
-          SID:item[0],
-          loc:this.stationID.get(item[0]),
-          lon:item[1],
-          lat:item[2],
-          w1:this.wCode.get(item[4]),
-          d1:this.wDir.get(item[5]),
-          s1:this.wScale.get(item[6]),
-          v1:item[7],
-          v2:item[8],
-          w2:this.wCode.get(item[9]),
-          d2:this.wDir.get(item[10]),
-          s2:this.wScale.get(item[11]),
-          infoW,
-          infoD,
-          infoV,
-          infoKTS,
-          infoGust,
-          infoWave,
-        }
-      });
+      /*
+      if(!this.fcCode[0][7]){
+        let emptyList = this.fcCode.map(item=>{
+          return {
+            SID:item[0],
+            loc:this.stationID.get(item[0]),
+            lon:item[1],
+            lat:item[2],
+          }
+        });
+        return emptyList;
+      }
+      else{*/
+          let list = this.fcCode.map(item=>{
+          item[7] = Math.min(this.wCode.get(item[4]).v1,this.wCode.get(item[9]).v1);
+          item[8] = Math.max(this.wCode.get(item[4]).v2,this.wCode.get(item[9]).v2);
+          let infoW = item[4]===item[9]?this.wCode.get(item[4]).cn:this.wCode.get(item[4]).cn+'转'+this.wCode.get(item[9]).cn;
+          let infoD = item[5]===item[10]?this.wDir.get(item[5]).cn:this.wDir.get(item[5]).cn+'转'+this.wDir.get(item[10]).cn;
+          //一旦有不在范围内的item数值，将会抛出错误
+          let infoV = item[7]===item[8]?item[7]:item[7]+'-'+item[8];
+          let infoKTS = item[6]===item[11]?this.wScale.get(item[6]).KTS:this.wScale.get(item[6]).KTS+'转'+this.wScale.get(item[11]).KTS;
+          let infoGust = item[6]===item[11]?this.wScale.get(item[6]).gust:this.wScale.get(item[6]).gust+'转'+this.wScale.get(item[11]).gust;
+          let infoWave = item[6]===item[11]?this.wScale.get(item[6]).wave:this.wScale.get(item[6]).wave+'转'+this.wScale.get(item[11]).wave;
+          return {
+            SID:item[0],
+            loc:this.stationID.get(item[0]),
+            lon:item[1],
+            lat:item[2],
+            w1:this.wCode.get(item[4]),
+            d1:this.wDir.get(item[5]),
+            s1:this.wScale.get(item[6]),
+            v1:item[7],
+            v2:item[8],
+            w2:this.wCode.get(item[9]),
+            d2:this.wDir.get(item[10]),
+            s2:this.wScale.get(item[11]),
+            infoW,
+            infoD,
+            infoV,
+            infoKTS,
+            infoGust,
+            infoWave,
+          }
+        });
+        return list;
+      // }
+      
       //console.log(JSON.stringify(list));
       //this.popUpData();
-      return list;
+      
     },
     wCodeList(){
       return new Array(...this.wCode.entries());
@@ -178,6 +214,7 @@ export default {
     },
     selectedData(){
       if(!this.selectedCode) return ({});
+      console.log('test');
       let item = this.selectedCode;
       let infoW = item[4]===item[9]?this.wCode.get(item[4]).cn:this.wCode.get(item[4]).cn+'转'+this.wCode.get(item[9]).cn;
       let infoD = item[5]===item[10]?this.wDir.get(item[5]).cn:this.wDir.get(item[5]).cn+'转'+this.wDir.get(item[10]).cn;
@@ -272,6 +309,40 @@ export default {
       return timeFormat;
       //return [localTimeStart,localTimeEnd];
     },
+    transOri2Fc(){ // TODO,默认配置写入config
+//let code = Array.from(this.oriCode);
+      if(this.oriCode.length==0) return [[ "02001", 119.7, 38.7,0,99,998,0,10,20,99,998,0],
+[ "02002", 121.33, 38.12,0,99,998,0,10,20,99,998,0],
+[ "02003", 123.27, 38.62,0,99,998,0,10,20,99,998,0],
+[ "02004", 123.7, 36.3,0,99,998,0,10,20,99,998,0],
+[ "02005", 123.5, 33.7,0,99,998,0,10,20,99,998,0],
+[ "02006", 125.77, 30.78,0,99,998,0,10,20,99,998,0],
+[ "02007", 123.75, 26.93,0,99,998,0,10,20,99,998,0],
+[ "020072", 123.75, 26.93,0,99,998,0,10,20,99,998,0],
+[ "02009", 122.62, 23.47,0,99,998,0,10,20,99,998,0],
+[ "03005", 128, 24,0,99,998,0,10,20,99,998,0],
+[ "030052", 128, 24,0,99,998,0,10,20,99,998,0],
+[ "020062", 125.77, 30.78,0,99,998,0,10,20,99,998,0],
+[ "03003", 129.3, 34.5,0,99,998,0,10,20,99,998,0]];
+      let selectedCode = selectedID.reduce((a,v)=>{
+        let item = this.oriCode.find(i=>{
+            return i[0] == v[1];
+        }); 
+        if(item.length){
+          item = item.concat([]);// concat深复制，防止引用。
+          item[0] = v[0];
+        } 
+        a.push(item)
+        return a;
+        // console.log(a);
+      },[]);
+      //for (let item of selectedCode){
+      //  console.log(item);
+      //}
+      // console.log(selectedCode);
+      // console.log('test')
+      return selectedCode;
+    },
     /*popUpData(){
       console.log('watch');
       this.$emit('popUpData', 'test');
@@ -285,6 +356,10 @@ export default {
       this.sTime = this.selectDate[0][0];
       this.eTime = this.selectDate[1][0];
     },
+    oriCode(){
+      // console.log('test');
+      this.fcCode = this.transOri2Fc();
+    }
     /*transList:{
       deep:true,
       handler:function(){

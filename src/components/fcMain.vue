@@ -29,10 +29,9 @@
     @click="searchData" label="查询" icon="search" primary></mu-raised-button>
     <span id="push-wrap">
       <mu-text-field label="发布时间" labelFloat class="pushDate" v-model="pushFcTime"/>
-      <mu-raised-button class="demo-raised-button" label="发布预报" icon="cloud_upload" secondary
-      @click="convertPushData"></mu-raised-button>
-      
     </span>
+    <mu-raised-button class="demo-raised-button" label="发布预报" icon="cloud_upload" secondary
+      @click="convertPushData"></mu-raised-button>
   </div>
 
   <mu-tabs class="time-view-tabs" :value="activeTab" @change="handleTabChange">
@@ -87,7 +86,8 @@ export default {
   components:{FcList,PostFcDialog,},
   data:function(){
     let fitTime = new Date();
-    let fitHour = 4<fitTime.getHours()&&fitTime.getHours()<15 ? '00':'12';//05时至16时取世界时00时，16时之后取12时
+    console.log(fitTime.getHours());
+    let fitHour = 0<=fitTime.getHours()&&fitTime.getHours()<15 ? '00':'12';//05时至16时取世界时00时，16时之后取12时
     let iniTime = new Date();
     let selectedDate = iniTime.getFullYear().toString() + '-' +
                        (Array(2).join('0') + (iniTime.getMonth()+1)).slice(-2) + '-' +
@@ -95,7 +95,7 @@ export default {
     let pushDate = iniTime.getFullYear().toString() + '/' +
                        (Array(2).join('0') + (iniTime.getMonth()+1)).slice(-2) + '/' +
                        (Array(2).join('0') + iniTime.getDate()).slice(-2);
-    let pushHour = 4<fitTime.getHours()&&fitTime.getHours()<15 ? '6:00:00':'16:00:00';
+    let pushHour = 0<=fitTime.getHours()&&fitTime.getHours()<15 ? '6:00:00':'16:00:00';
     return {
       text:[],
       text2:[],
@@ -215,7 +215,7 @@ export default {
         }
       });
       //console.log(dataArray);
-      this.pushData(dataArray)
+      this.pushData({fc:dataArray,pushTime:this.pushFcTime});
     },
     pushData(data){
       /* 上传预报数据 */
@@ -264,6 +264,45 @@ export default {
 }
 </script>
 <style >
+
+.serach-block{
+  display:flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+.serach-block > .shift-date-picker{
+  margin-bottom :-28px;
+  width:120px;
+  margin-left:5px;
+}
+.serach-block > .shift-date-picker .mu-text-field-line{
+  width:120px;
+}
+
+.serach-block > .mu-dropDown-menu{
+  margin-bottom :6px ;
+}
+
+.serach-block .mu-text-field{
+  width:180px;
+}
+#push-wrap{
+    margin-left:50px;
+  }
+
+.forcaster-time{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.shift-date-picker.mu-date-picker{
+    vertical-align: middle;
+  }
+
+/*
   .mu-icon{
   vertical-align: middle;
   }
@@ -273,6 +312,11 @@ export default {
   .pushDate{
     vertical-align: top;
   }
+
+  #push-wrap{
+    margin-left:20px;
+  }
+*/
   .mu-tabs.time-view-tabs{
     background-color: transparent;
     
@@ -293,8 +337,6 @@ export default {
   max-width: 375px;
   }
 
-  #push-wrap{
-    margin-left:20px;
-  }
+  
 </style>
 
