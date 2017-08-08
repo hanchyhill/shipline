@@ -19,7 +19,8 @@ function convertJSON(data){
     })}
   );
   let format121={
-    error:false,
+    status:1,
+//    error:false,
     data:{
       postTime:pushTime, // 发布日期
       fcList:array121,
