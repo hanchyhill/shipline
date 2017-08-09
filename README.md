@@ -24,6 +24,7 @@ npm run build
 npm run build --report
 ```
 ## folder tree
+```
 ├─api 服务端接口
 │  ├─bak
 │  │  └─ejs
@@ -43,5 +44,6 @@ npm run build --report
 │  ├─resource 配置文件
 │  └─router
 └─static
+```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
