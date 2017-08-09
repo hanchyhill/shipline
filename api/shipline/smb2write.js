@@ -13,7 +13,7 @@ const path = 'special\\gdjz\\node\\';
 
 
 
-async function writeSMB2(data,files=['bhx.html']){
+async function writeSMB2(data,files=['bh.html']){
   try{
     var smb2Client = new SMB2(configSMB);
     var writeFileP = function(data,path){

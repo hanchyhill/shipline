@@ -15,12 +15,17 @@ function convertJSON(data){
         weather_phenomena: v.infoW,
         wind_power: v.infoKTS,
         gust: v.infoGust,
+        w:[v.w1,v.w2],
+        // v:[v.v1,v.v2],
+        d:[v.d1,v.d2],
+        s:[v.s1,v.s2]
       }
     })}
   );
   let format121={
     status:1,
 //    error:false,
+    createTime:(new Date()).toISOString(),
     data:{
       postTime:pushTime, // 发布日期
       fcList:array121,

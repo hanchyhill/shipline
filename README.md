@@ -2,6 +2,11 @@
 
 > A Vue.js project
 
+## install Node.js
+
+install Node.js>=8.0
+
+[Node.js download](https://nodejs.org/)
 ## Build Setup
 
 ``` bash
@@ -10,7 +15,8 @@ npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
-
+# serve api at localhost:10072
+npm run server
 # build for production with minification
 npm run build
 

@@ -87,8 +87,8 @@ apiRouter.route('/:apiName') //post数据
 
   try{
     let json121 = convert121(fcdata);
-    writeSMB2(json121,['bhx.json'].concat(`bhx${fileTime}.json`));
-    fs.writeFile('../bhx/bhx.json', json121, (err)=>{if (err) {
+    writeSMB2(json121,['bh.json'].concat(`bh${fileTime}.json`));
+    fs.writeFile('../bhx/bh.json', json121, (err)=>{if (err) {
        return console.error(err);
     }});
   }
@@ -102,7 +102,7 @@ apiRouter.route('/:apiName') //post数据
     fs.writeFile('../bhx/bhx.html', html, (err)=>{if (err) {
        return console.error(err);
     }});
-    return writeSMB2(html,['bhx.html'].concat(`bhx${fileTime}.html`));
+    return writeSMB2(html,['bh.html'].concat(`bh${fileTime}.html`));
   }
   )
   .then(info=>{
