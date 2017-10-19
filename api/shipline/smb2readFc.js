@@ -16,6 +16,7 @@ async function readRemoteFc(){
       return new Promise((resolve,reject)=>{
         smb2Client.readFile(path2read,(err,data)=>{
           if(err) reject(err);
+          if(!data.toString) reject('无法解析出字符串');
           resolve(data.toString('utf8'));
         })
       })
