@@ -3,15 +3,15 @@
     <div class="forcaster-time">
     时效
     <mu-date-picker class="shift-date-picker list-date-picker" underlineClass="list-date-underline"
-    inputClass="list-date-input" autoOk container="inline" 
+    inputClass="list-date-input" autoOk container="inline"
     hintText="选择日期" format="YYYY年MM月DD日"  v-model="sTime"></mu-date-picker>
-    
+
     <mu-text-field :underlineShow="false" class="list-hour" v-model="selectDate[0][1]"/>时
-    
+
     <span>至</span>
     <mu-date-picker class="shift-date-picker list-date-picker" underlineClass="list-date-underline"
-    inputClass="list-date-input" autoOk container="inline" 
-    hintText="选择日期" format="YYYY年MM月DD日" 
+    inputClass="list-date-input" autoOk container="inline"
+    hintText="选择日期" format="YYYY年MM月DD日"
     :underlineShow="true" v-model="eTime"></mu-date-picker>
     <mu-text-field :underlineShow="false" class="list-hour" v-model="selectDate[1][1]"/>时
     <!--<br><span>时效: {{timeFormat}}</span>-->
@@ -25,7 +25,7 @@
           <mu-th tooltip="天气2">风速(KTS)</mu-th>
           <mu-th tooltip="天气2">阵风(KTS)</mu-th>
           <mu-th tooltip="天气2">浪高(M)</mu-th>
-          <mu-th tooltip="天气2">能见度（KM）</mu-th>       
+          <mu-th tooltip="天气2">能见度（KM）</mu-th>
         </mu-tr>
       </mu-thead>
       <mu-tbody>
@@ -48,7 +48,7 @@
         hintText="天气1" :underlineShow="true" :fullWidth="false" :autoWidth="true">
           <mu-menu-item v-for="x of wCodeList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
-        <mu-select-field :fullWidth="false" :maxHeight="300" v-model="selectedCode[9]" 
+        <mu-select-field :fullWidth="false" :maxHeight="300" v-model="selectedCode[9]"
         hintText="天气2" :underlineShow="true" :autoWidth="true" >
           <mu-menu-item v-for="x of wCodeList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
@@ -58,7 +58,7 @@
         hintText="风向1" :underlineShow="true" :fullWidth="false">
           <mu-menu-item v-for="x of wDirList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
-        <mu-select-field :fullWidth="false" :maxHeight="300" v-model="selectedCode[10]" 
+        <mu-select-field :fullWidth="false" :maxHeight="300" v-model="selectedCode[10]"
         hintText="风向2" :underlineShow="true" :autoWidth="true" >
           <mu-menu-item v-for="x of wDirList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
@@ -68,7 +68,7 @@
         hintText="风速1" :underlineShow="true" :fullWidth="false">
           <mu-menu-item v-for="x of wScaleList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
-        <mu-select-field :fullWidth="false" :maxHeight="300" v-model="selectedCode[11]" 
+        <mu-select-field :fullWidth="false" :maxHeight="300" v-model="selectedCode[11]"
         hintText="风速2" :underlineShow="true" :autoWidth="true" >
           <mu-menu-item v-for="x of wScaleList" :key="x[0]" :value="x[0]" :title="x[1].cn"></mu-menu-item>
         </mu-select-field>
@@ -77,7 +77,7 @@
       <mu-list-item title="能见度" :disableRipple="true">
         <mu-text-field hintText="能见度1" type="number" v-model="selectedCode[7]"></mu-text-field>
         <mu-text-field hintText="能见度2" type="number" v-model="selectedCode[8]"></mu-text-field>
-      </mu-list-item> 
+      </mu-list-item>
       -->
       <mu-list-item @click.native="open = false" title="关闭"></mu-list-item>
     </mu-list>
@@ -132,11 +132,11 @@ export default {
       let selectedCode = selectedID.reduce((a,v)=>{
         let item = this.oriCode.find(i=>{
             return i[0] == v[1];
-        }); 
+        });
         if(item.length){
           item = item.concat([]);// concat深复制，防止引用。
           item[0] = v[0];
-        } 
+        }
         a.push(item)
         return a;
         // console.log(a);
@@ -198,10 +198,10 @@ export default {
         });
         return list;
       // }
-      
+
       //console.log(JSON.stringify(list));
       //this.popUpData();
-      
+
     },
     wCodeList(){
       return new Array(...this.wCode.entries());
@@ -240,7 +240,7 @@ export default {
       //this.popUpData();
       return fcItem;
     },
-    
+
     startTime(){
       /* 转换时间fcTime */
       let fcTimeArray = [];
@@ -269,7 +269,7 @@ export default {
     },
     timeFormat(){
       return `${this.sTime}${this.selectDate[0][1]}时至${this.eTime}${this.selectDate[1][1]}时`;
-      
+
       //return this.startTime[0] + '至' + this.startTime[1]
     },
   },//computed
@@ -277,7 +277,7 @@ export default {
     toggle () {
       this.open = !this.open
     },
-    toggleDrawer (index) {     
+    toggleDrawer (index) {
       this.selectedIndex = index;
       this.selectedCode = this.fcCode[index];
       //console.log(this.fcCode[index]);
@@ -327,11 +327,11 @@ export default {
       let selectedCode = selectedID.reduce((a,v)=>{
         let item = this.oriCode.find(i=>{
             return i[0] == v[1];
-        }); 
+        });
         if(item.length){
           item = item.concat([]);// concat深复制，防止引用。
           item[0] = v[0];
-        } 
+        }
         a.push(item)
         return a;
         // console.log(a);
@@ -397,10 +397,12 @@ export default {
 .list-date-picker{
     position: relative;
     top:8px;
+    margin-left: 4px;
   }
   .list-hour{
     position: relative;
-    top:2px;
+    top:4px;
+    margin-left: 4px;
   }
   .list-hour .mu-text-field-input{
     color:#7E57C2;

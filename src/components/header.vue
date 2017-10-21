@@ -14,6 +14,9 @@
     </span>
     <mu-drawer :open="isLeftOpen" :docked="docked" @close="toggle()">
       <mu-list @itemClick="docked ? '' : toggle()">
+        <mu-list-item title="本地解析文件" @click.native="emitLocalResolve">
+          <mu-icon slot="left" value="import_export" />
+        </mu-list-item>
         <mu-list-item title="wiki帮助" target="_blank" href="http://wiki.gdmo.gq/index.php?title=%E5%8C%97%E8%88%AA%E7%BA%BF%E6%B5%B7%E6%B4%8B%E6%B0%94%E8%B1%A1%E9%A2%84%E6%8A%A5%E5%8F%91%E5%B8%83%E7%B3%BB%E7%BB%9F">
           <mu-icon slot="left" value="help" />
         </mu-list-item>
@@ -65,6 +68,10 @@ export default {
     toggle (flag) {
       this.isLeftOpen = !this.isLeftOpen;
     },
+    emitLocalResolve(){
+      this.$emit('emitInfo');
+      this.isLeftOpen = false;
+    }
   }, // methods end
   watch: {
     '$route' (to, from) {

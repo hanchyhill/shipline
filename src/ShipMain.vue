@@ -1,10 +1,10 @@
 <template>
   <div>
-    <main-header></main-header>
+    <main-header v-on:emitInfo="showLocal"></main-header>
     <!--<main-fc></main-fc>-->
     <transition name="fade">
       <keep-alive>
-        <router-view></router-view>
+        <router-view :showLocal="isLocal"></router-view>
       </keep-alive>
     </transition>
   </div>
@@ -19,12 +19,16 @@ export default {
   components:{MainHeader,MainFc,},
   data:function(){
     return {
+      isLocal:false,
     }
   },
   created(){
-    // 
+    //
   },// created结束
   methods:{
+    showLocal(){
+      this.isLocal = !this.isLocal;
+    },
   },// method结束
   watch: {
   },// watch 结束

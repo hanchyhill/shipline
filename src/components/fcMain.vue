@@ -1,6 +1,6 @@
 <template>
 <div id="main-fc">
-      <mu-popup position="top" :overlay="false" popupClass="popup-top" :open="topPopup">
+  <mu-popup position="top" :overlay="false" popupClass="popup-top" :open="topPopup">
     {{popUpText}}
   </mu-popup>
   <mu-row>
@@ -16,9 +16,9 @@
     <mu-date-picker class="shift-date-picker" autoOk container="inline" hintText="选择日期" v-model="selectedDate"></mu-date-picker>
     <mu-dropDown-menu :value="hourUTC" @change="hourChange">
       <mu-menu-item value="00" title="00 UTC"></mu-menu-item>
-      <!--<mu-menu-item value="06" title="06 UTC"/>-->
+      <mu-menu-item value="06" title="06 UTC"/>
       <mu-menu-item value="12" title="12 UTC"></mu-menu-item>
-      <!--<mu-menu-item value="18" title="18 UTC"/>-->
+      <mu-menu-item value="18" title="18 UTC"/>
     </mu-dropDown-menu>
     <mu-select-field v-model="validTime" multiple label="时效">
       <mu-menu-item value="24" title="24h"></mu-menu-item>
@@ -51,7 +51,7 @@
   <mu-col class="space-col"></mu-col>
   </mu-row>
 
-   <mu-dialog :open="selectDialog" title="选择时次对应的数据">
+  <mu-dialog :open="selectDialog" title="选择时次对应的数据">
     <div>时次1
       <mu-select-field :maxHeight="300" v-model="selectTime[0]"
         hintText="时次1" :underlineShow="true" :fullWidth="false">
@@ -73,21 +73,26 @@
     <mu-flat-button slot="actions" @click="closeSelectDialog(false)" primary label="取消"></mu-flat-button>
     <mu-flat-button slot="actions" primary @click="closeSelectDialog(true)" label="确定"></mu-flat-button>
   </mu-dialog>
-  <post-fc-dialog :trigger-dialog="postFeedBackDialog"></post-fc-dialog>
+  <local-resolve-dialog :trigger-dialog="isResolveLocal" :initDate="initDate"
+  v-on:emitLocalData="receiveLocalData"></local-resolve-dialog>
 </div>
 </template>
 <script>
 import axios from 'axios';
 import FcList from './fcList.vue';
 import PostFcDialog from './postFcDialog.vue';
+import LocalResolveDialog from './localResolveDialog.vue';
 
 export default {
   name: 'fcApp',
-  components:{FcList,PostFcDialog,},
+  components:{FcList,PostFcDialog,LocalResolveDialog,},
+  props: {
+      'showLocal': Boolean,
+    },
   data:function(){
     let fitTime = new Date();
     console.log(fitTime.getHours());
-    let fitHour = 0<=fitTime.getHours()&&fitTime.getHours()<15 ? '00':'12';//05时至16时取世界时00时，16时之后取12时
+    let fitHour = 0<=fitTime.getHours()&&fitTime.getHours()<15 ? '00':'12';//05时至15时取世界时00时，15时之后取12时
     let iniTime = new Date();
     let selectedDate = iniTime.getFullYear().toString() + '-' +
                        (Array(2).join('0') + (iniTime.getMonth()+1)).slice(-2) + '-' +
@@ -97,6 +102,7 @@ export default {
                        (Array(2).join('0') + iniTime.getDate()).slice(-2);
     let pushHour = 0<=fitTime.getHours()&&fitTime.getHours()<15 ? '6:00:00':'16:00:00';
     return {
+      initDate:[selectedDate,fitHour],
       text:[],
       text2:[],
       text3:[],
@@ -112,6 +118,7 @@ export default {
       posterList:[],
       selectTime:[-1,-1,-1],
       postFeedBackDialog:false,
+      isResolveLocal:false,
       pushFcTime:`${selectedDate.replace(/-/g,'/')} ${pushHour}`,
     }
   },
@@ -148,7 +155,7 @@ export default {
           this.popUpText = '获取成功';
           this.topPopup = true;
           this.posterList = res.data;
-          
+
           if(this.posterList.length== 3){
             [this.text,this.text2,this.text3] = this.posterList.map(v=>v.fcCode);
             this.fcTime = this.posterList.map(v=>v.time);
@@ -184,8 +191,8 @@ export default {
       let fullURL = baseURL + '?time=' + sDate+this.hourUTC + '&fc=' + timeJoin
                     +'&method='+this.methodGetData;
       this.getBasicInfo(fullURL);
-      
-      
+
+
       /////let fullURL = baseURL + '?time=' +  timeList[0];
       /////this.getBasicInfo(fullURL,'text');
       /////fullURL = baseURL + '?time=' +  timeList[1];
@@ -200,7 +207,9 @@ export default {
       this.selectTime.forEach((ele,eIndex)=>{
         if(ele!=-1){
           this[dataTimeName[eIndex]] = this.posterList[ele].fcCode;
-          this.fcTime[eIndex] = this.posterList[ele].time;
+          // this.fcTime[eIndex] = this.posterList[ele].time;
+          this.fcTime[eIndex] = this.initDate[0].replace(/-/g,'') + this.initDate[1] +
+                                '000' + ((i + 1) * 24).toString() + '00';
         }
       });
     },
@@ -237,6 +246,18 @@ export default {
         console.log(error);
       });
     },
+    trigerLocalResolve(){
+      this.isResolveLocal = !this.isResolveLocal
+    },
+    receiveLocalData(localData){
+      // console.log('localData');
+      console.log(localData);
+      [this.text,this.text2,this.text3] = localData.map(v=>v.fcCode);
+      this.fcTime = localData.map(v=>v.time);
+      this.trigerLocalResolve();
+      this.popUpText = '解析完成';
+      this.topPopup = true;
+    }
   },//method结束
 
   watch: {
@@ -246,6 +267,9 @@ export default {
           this.topPopup = false
         }, 2500)
       }
+    },
+    showLocal(){
+      this.trigerLocalResolve();
     }
   },// watch 结束
   computed:{
@@ -279,7 +303,7 @@ export default {
   justify-content: flex-start;
 }
 .serach-block > .shift-date-picker{
-  margin-bottom :-28px;
+  margin-bottom: -24px;
   width:120px;
   margin-left:5px;
 }
@@ -325,7 +349,7 @@ export default {
 */
   .mu-tabs.time-view-tabs{
     background-color: transparent;
-    
+
     margin-bottom: 16px;
   }
   .time-view-tabs div{
@@ -343,6 +367,6 @@ export default {
   max-width: 375px;
   }
 
-  
+
 </style>
 
