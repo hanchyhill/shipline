@@ -1,7 +1,6 @@
 # primary
 * 缺省code,URL地址等参数转入config
-* 报文容错性兼容
-* pm2 watch 无法正确监控
+* 报文错误时提示警告
 * 本地文件解析功能容错能力
 
 # secondary

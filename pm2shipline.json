@@ -3,20 +3,18 @@
   "script"      : "./api/shipline-server.js",  // 实际启动脚本
   "cwd"         : "./api/",  // 当前工作路径
   "watch": [  // 监控变化的目录，一旦变化，自动重启
-    "api"
+    "api",
+    "shipline"
   ],
   "ignore_watch" : [  // 从监控目录中排除
-    "node_modules", 
+    "node_modules",
     "dist",
     "logs",
     "bhx",
-    "src",
-    "shipline"
+    "src"
   ],
   "watch_options": {
-    "followSymlinks": false,
-    // "usePolling": true,
-    "cwd":"./api/"
+    "followSymlinks": false
   },
   "error_file" : "../logs/app-err.log",  // 错误日志路径
   "out_file"   : "../logs/app-out.log",  // 普通日志路径

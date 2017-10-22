@@ -18,7 +18,7 @@
       <mu-menu-item value="00" title="00 UTC"></mu-menu-item>
       <mu-menu-item value="06" title="06 UTC"/>
       <mu-menu-item value="12" title="12 UTC"></mu-menu-item>
-      <mu-menu-item value="18" title="18 UTC"/>
+      <!--<mu-menu-item value="18" title="18 UTC"/>-->
     </mu-dropDown-menu>
     <mu-select-field v-model="validTime" multiple label="时效">
       <mu-menu-item value="24" title="24h"></mu-menu-item>

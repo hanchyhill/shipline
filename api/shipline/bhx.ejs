@@ -10,11 +10,12 @@
       hr{border-top:4px solid red;}
       table,table tr th, table tr td { border:1px solid black; }
       #wrap{display: flex;flex-direction: column;align-items: center;justify-content: center;}
-      #wrap table{min-width: 670px;}
-      #wrap{width:800px;text-align: center;margin:0 auto;}
+      #wrap table{min-width: 800px;}
+      #wrap{width:850px;text-align: center;margin:0 auto;}
       table{margin-top:20px;}table caption {color: blue;font-size: 25px;}
       .fc-item th{color:blue;border-color:black;font-weight:normal; }
       .push-time{color: blue;font-size: 25px;}
+      .hide-in-bg{color: rgb(244, 236, 216)}
     </style>
   </head>
   <body>
@@ -42,7 +43,7 @@
     <% }) %>
     <% } %>
   <p class="push-time">发布时间：<%=pushTime%></p>
-  <p>时间戳：<% let k = new Date(); %><%=k%></p>
+  <p class = "hide-in-bg">时间戳：<% let k = new Date(); %><%=k%></p>
   </div>
 </body>
 </html>

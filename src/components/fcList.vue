@@ -87,6 +87,12 @@
 
 <script>
 import { stationID, wCode, wDir, wScale, selectedID } from '../util.js';
+
+function canItMap(item, map, defaultV){
+  const hasKey = map.has(item);
+  return hasKey? [item, true] : [defaultV, false];
+}
+
 export default {
   name: 'fcList',
   props: {
@@ -105,103 +111,85 @@ export default {
       selectedIndex:0,
       selectedCode:this.length?this.fcCode[0]:["03005", 128, 24, 0, 12, 45, 6, 1, 3, 10, 45, 5],
       selectDate,
-      //localTimeStart,
-      //localTimeEnd,
       sTime:'',
       eTime:'',
       fcCode:this.transOri2Fc(),
     }
   },
   computed:{
-    /*
-    fcCode(){
-      //let code = Array.from(this.oriCode);
-      if(this.oriCode.length==0) return [] [[ "02001", 119.7, 38.7,,,,,,,,,,],
-[ "02002", 121.33, 38.12,,,,,,,,,,],
-[ "02003", 123.27, 38.62,,,,,,,,,,],
-[ "02004", 123.7, 36.3,,,,,,,,,,],
-[ "02005", 123.5, 33.7,,,,,,,,,,],
-[ "02006", 125.77, 30.78,,,,,,,,,,],
-[ "02007", 123.75, 26.93,,,,,,,,,,],
-[ "020072", 123.75, 26.93,,,,,,,,,,],
-[ "02009", 122.62, 23.47,,,,,,,,,,],
-[ "03005", 128, 24,,,,,,,,,,],
-[ "030052", 128, 24,,,,,,,,,,],
-[ "020062", 125.77, 30.78,,,,,,,,,,],
-[ "03003", 129.3, 34.5,,,,,,,,,,]];
-      let selectedCode = selectedID.reduce((a,v)=>{
-        let item = this.oriCode.find(i=>{
-            return i[0] == v[1];
-        });
-        if(item.length){
-          item = item.concat([]);// concat深复制，防止引用。
-          item[0] = v[0];
-        }
-        a.push(item)
-        return a;
-        // console.log(a);
-      },[]);
-      //for (let item of selectedCode){
-      //  console.log(item);
-      //}
-      // console.log(selectedCode);
-      // console.log('test')
-      return selectedCode;
-    },*/
+
     transList:function(){
-       // console.log('test');
-      //console.log(this.stationID.get("03021"));
       if(!this.fcCode) return ({});
-      /*
-      if(!this.fcCode[0][7]){
-        let emptyList = this.fcCode.map(item=>{
-          return {
-            SID:item[0],
-            loc:this.stationID.get(item[0]),
-            lon:item[1],
-            lat:item[2],
-          }
-        });
-        return emptyList;
+      function initStatus(){
+        return {status:true, childstatus:[true, true]}
       }
-      else{*/
-          let list = this.fcCode.map(item=>{
-          item[7] = Math.min(this.wCode.get(item[4]).v1,this.wCode.get(item[9]).v1);
-          item[8] = Math.max(this.wCode.get(item[4]).v2,this.wCode.get(item[9]).v2);
-          let infoW = item[4]===item[9]?this.wCode.get(item[4]).cn:this.wCode.get(item[4]).cn+'转'+this.wCode.get(item[9]).cn;
-          let infoD = item[5]===item[10]?this.wDir.get(item[5]).cn:this.wDir.get(item[5]).cn+'转'+this.wDir.get(item[10]).cn;
-          //一旦有不在范围内的item数值，将会抛出错误
-          let infoV = item[7]===item[8]?item[7]:item[7]+'-'+item[8];
-          let infoKTS = item[6]===item[11]?this.wScale.get(item[6]).KTS:this.wScale.get(item[6]).KTS+'转'+this.wScale.get(item[11]).KTS;
-          let infoGust = item[6]===item[11]?this.wScale.get(item[6]).gust:this.wScale.get(item[6]).gust+'转'+this.wScale.get(item[11]).gust;
-          let infoWave = item[6]===item[11]?this.wScale.get(item[6]).wave:this.wScale.get(item[6]).wave+'转'+this.wScale.get(item[11]).wave;
-          return {
-            SID:item[0],
-            loc:this.stationID.get(item[0]),
-            lon:item[1],
-            lat:item[2],
-            w1:this.wCode.get(item[4]),
-            d1:this.wDir.get(item[5]),
-            s1:this.wScale.get(item[6]),
-            v1:item[7],
-            v2:item[8],
-            w2:this.wCode.get(item[9]),
-            d2:this.wDir.get(item[10]),
-            s2:this.wScale.get(item[11]),
-            infoW,
-            infoD,
-            infoV,
-            infoKTS,
-            infoGust,
-            infoWave,
-          }
-        });
+
+      const isAllTrue = (a, b)=> a && b;
+
+      let list = this.fcCode.map(item=>{
+        let errorCollector = {
+          wCode: initStatus(),
+          wDir: initStatus(),
+          wScale: initStatus(),
+          stationID: {status:true},
+        };
+
+        // 判断key是否正确
+
+         [item[4], errorCollector.wCode.childstatus[0]] =
+        canItMap(item[4], this.wCode, 99);
+
+        [item[9], errorCollector.wCode.childstatus[1]] =
+        canItMap(item[9], this.wCode, 99);
+
+        [item[5], errorCollector.wDir.childstatus[0]] =
+        canItMap(item[5], this.wDir, 998);
+        [item[10], errorCollector.wDir.childstatus[1]] =
+        canItMap(item[10], this.wDir, 998);
+
+        [item[6], errorCollector.wScale.childstatus[0]] =
+        canItMap(item[6], this.wScale, 0);
+        [item[11], errorCollector.wScale.childstatus[1]] =
+        canItMap(item[11], this.wScale, 0);
+
+        errorCollector.wCode.status = isAllTrue(...errorCollector.wCode.childstatus);
+        errorCollector.wDir.status = isAllTrue(...errorCollector.wDir.childstatus);
+        errorCollector.wScale.status = isAllTrue(...errorCollector.wScale.childstatus);
+        // [item[0], errorCollector.stationID.status] =
+        // canItMap(item[0], this.stationID, "999999");
+        // TODO 错误时提示警告
+
+        item[7] = Math.min(this.wCode.get(item[4]).v1,this.wCode.get(item[9]).v1);
+        item[8] = Math.max(this.wCode.get(item[4]).v2,this.wCode.get(item[9]).v2);
+        let infoW = item[4]===item[9]?this.wCode.get(item[4]).cn:this.wCode.get(item[4]).cn+'转'+this.wCode.get(item[9]).cn;
+        let infoD = item[5]===item[10]?this.wDir.get(item[5]).cn:this.wDir.get(item[5]).cn+'转'+this.wDir.get(item[10]).cn;
+        //一旦有不在范围内的item数值，将会抛出错误
+        let infoV = item[7]===item[8]?item[7]:item[7]+'-'+item[8];
+        let infoKTS = item[6]===item[11]?this.wScale.get(item[6]).KTS:this.wScale.get(item[6]).KTS+'转'+this.wScale.get(item[11]).KTS;
+        let infoGust = item[6]===item[11]?this.wScale.get(item[6]).gust:this.wScale.get(item[6]).gust+'转'+this.wScale.get(item[11]).gust;
+        let infoWave = item[6]===item[11]?this.wScale.get(item[6]).wave:this.wScale.get(item[6]).wave+'转'+this.wScale.get(item[11]).wave;
+        return {
+          SID:item[0],
+          loc:this.stationID.get(item[0]),
+          lon:item[1],
+          lat:item[2],
+          w1:this.wCode.get(item[4]),
+          d1:this.wDir.get(item[5]),
+          s1:this.wScale.get(item[6]),
+          v1:item[7],
+          v2:item[8],
+          w2:this.wCode.get(item[9]),
+          d2:this.wDir.get(item[10]),
+          s2:this.wScale.get(item[11]),
+          infoW,
+          infoD,
+          infoV,
+          infoKTS,
+          infoGust,
+          infoWave,
+        }
+      });
         return list;
-      // }
-
-      //console.log(JSON.stringify(list));
-      //this.popUpData();
-
     },
     wCodeList(){
       return new Array(...this.wCode.entries());
@@ -269,10 +257,8 @@ export default {
     },
     timeFormat(){
       return `${this.sTime}${this.selectDate[0][1]}时至${this.eTime}${this.selectDate[1][1]}时`;
-
-      //return this.startTime[0] + '至' + this.startTime[1]
     },
-  },//computed
+  },//computed end
   methods: {
     toggle () {
       this.open = !this.open
@@ -280,7 +266,6 @@ export default {
     toggleDrawer (index) {
       this.selectedIndex = index;
       this.selectedCode = this.fcCode[index];
-      //console.log(this.fcCode[index]);
       this.open = !this.open;
     },
     formatDate(){
@@ -334,19 +319,9 @@ export default {
         }
         a.push(item)
         return a;
-        // console.log(a);
       },[]);
-      //for (let item of selectedCode){
-      //  console.log(item);
-      //}
-      // console.log(selectedCode);
-      // console.log('test')
       return selectedCode;
     },
-    /*popUpData(){
-      console.log('watch');
-      this.$emit('popUpData', 'test');
-    },*/
   },//methods结束
   watch:{
     fcTime(){
@@ -360,14 +335,6 @@ export default {
       // console.log('test');
       this.fcCode = this.transOri2Fc();
     }
-    /*transList:{
-      deep:true,
-      handler:function(){
-      //console.log('watch');
-      this.popUpData();
-      //bus.$emit('id-selected', 1);
-      }
-    },*/
   },
 }
 </script>

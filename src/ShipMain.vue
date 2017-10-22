@@ -12,11 +12,11 @@
 
 <script>
 import MainHeader from './components/header.vue';
-import MainFc from './components/fcMain.vue';
+// import MainFc from './components/fcMain.vue';
 
 export default {
   name: 'app',
-  components:{MainHeader,MainFc,},
+  components:{MainHeader,},
   data:function(){
     return {
       isLocal:false,
