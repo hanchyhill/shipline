@@ -7,7 +7,8 @@ const configSMB = {
   username:'qxt',
   password:'qxtqxt',
 };
-const path2read = 'special\\gdjz\\node\\bh.html';
+///const path2read = 'special\\gdjz\\node\\bh.html';
+const path2read = 'special\\gdjz\\bh.html';
 
 async function readRemoteFc(){
   try{

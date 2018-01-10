@@ -8,7 +8,8 @@ const configSMB = {
   password:'qxtqxt',
 };
 
-const path = 'special\\gdjz\\node\\';
+// const path = 'special\\gdjz\\node\\';
+const path = 'special\\gdjz\\';
 
 
 
