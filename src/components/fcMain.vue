@@ -137,10 +137,10 @@ export default {
       postFeedBackDialog:false,
       isResolveLocal:false,
       pushFcTime:`${selectedDate.replace(/-/g,'/')} ${pushHour}`,
-      warningPushDialog:false,
-      warningErrorText:'[无持续风向][微风][未知天气]',
-      errorTextArr:['无持续风向','微风','未知天气'],
-      finalData:({}),
+      warningPushDialog:false,// 发布异常弹出开关
+      warningErrorText:'',// 发布异常文本
+      errorTextArr:['无持续风向','微风','未知天气'],// 需要检测的异常
+      finalData:({}),// 最后发出的报文
     }
   },
   created(){
@@ -153,13 +153,15 @@ export default {
   },
 
   methods:{
-    getData:function(){
+    /*
+    getData:function(){// 废弃
       let fullURL = '/api/getData';
       // this.getBasicInfo(fullURL,'text');
       // this.getBasicInfo(fullURL,'text2');
       // this.getBasicInfo(fullURL,'text3');
     },
-    getBasicInfo:function(fullURL,text){
+    */
+    getBasicInfo:function(fullURL,text){// 获取数据
       //let fullURL = '/api/testData';
       this.popUpText = '正在获取数据';
       this.topPopup = true;
@@ -234,8 +236,8 @@ export default {
         }
       });
     },
-    convertPushData(){
-      /* 获取需要上传的数据 */
+    convertPushData(){ /* 转换、获取需要上传的数据 */
+
       const listName = ['fc0','fc1','fc2'];
       let dataArray = listName.map(v=>{
         let list = this.$refs[v].transList;
@@ -250,7 +252,7 @@ export default {
           pushTime:this.pushFcTime,
           fileNameTime:this.fileNameTime}
 
-      return this.finalData;
+      return this.finalData; // 未使用到返回值
     },
     checkErrorData(data){// 检查字符串是否有错误
        this.warningErrorText = '';
@@ -263,8 +265,8 @@ export default {
        }
        return isPassCheck;
     },
-    pushData(data){
-      /* 上传预报数据 */
+    pushData(data){/* 上传预报数据 */
+
       axios.post('/api/upload-shipline', {
         fcdata: data,
         info: '上传北航线预报'
@@ -281,7 +283,7 @@ export default {
         console.log(error);
       });
     },
-    checkPushData(openDialog,isPush){// 发布数据警告对话框
+    checkPushData(openDialog,isPush){// 发布数据检查，警告对话框
       if(openDialog){
         this.convertPushData();// 转换数据
         let isPassCheck = this.checkErrorData(JSON.stringify(this.finalData.fc)); // 检查是否有错
@@ -302,7 +304,7 @@ export default {
         this.warningPushDialog = false;
       }
     },
-    trigerLocalResolve(){
+    trigerLocalResolve(){// 本地解析数据弹窗
       this.isResolveLocal = !this.isResolveLocal
     },
     receiveLocalData(localData){
