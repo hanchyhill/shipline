@@ -91,7 +91,7 @@ export default {
     },
   data:function(){
     let fitTime = new Date();
-    console.log(fitTime.getHours());
+    // console.log(fitTime.getHours());
     let fitHour = 0<=fitTime.getHours()&&fitTime.getHours()<15 ? '00':'12';//05时至15时取世界时00时，15时之后取12时
     let iniTime = new Date();
     let selectedDate = iniTime.getFullYear().toString() + '-' +
