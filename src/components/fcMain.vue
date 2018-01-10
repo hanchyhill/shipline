@@ -31,7 +31,7 @@
       <mu-text-field label="发布时间" labelFloat class="pushDate" v-model="pushFcTime"/>
     </span>
     <mu-raised-button class="demo-raised-button" label="发布预报" icon="cloud_upload" secondary
-      @click="convertPushData"></mu-raised-button>
+      @click="checkPushData(openDialog=true)"></mu-raised-button>
   </div>
 
   <mu-tabs class="time-view-tabs" :value="activeTab" @change="handleTabChange">
@@ -75,6 +75,23 @@
   </mu-dialog>
   <local-resolve-dialog :trigger-dialog="isResolveLocal" :initDate="initDate"
   v-on:emitLocalData="receiveLocalData"></local-resolve-dialog>
+  <!-- 发布时检查异常数据弹窗 -->
+  <mu-dialog :open="warningPushDialog" title="检查出异常值">
+    <mu-card>
+      <mu-card-header title="检测出以下异常数据">
+      </mu-card-header>
+      <mu-card-text class="warningData">
+        {{this.warningErrorText}}
+      </mu-card-text>
+    </mu-card>
+
+    <mu-raised-button slot="actions" @click="checkPushData(openDialog=false,isPush=false)" primary
+      label="取消发送，再检查一遍">
+    </mu-raised-button>
+    <mu-flat-button slot="actions" @click="checkPushData(openDialog=false,isPush=true)" color="gray"
+          label="跳过检查继续发布">
+    </mu-flat-button>
+  </mu-dialog>
 </div>
 </template>
 <script>
@@ -120,6 +137,10 @@ export default {
       postFeedBackDialog:false,
       isResolveLocal:false,
       pushFcTime:`${selectedDate.replace(/-/g,'/')} ${pushHour}`,
+      warningPushDialog:false,
+      warningErrorText:'[无持续风向][微风][未知天气]',
+      errorTextArr:['无持续风向','微风','未知天气'],
+      finalData:({}),
     }
   },
   created(){
@@ -223,10 +244,24 @@ export default {
           fc:list
         }
       });
-      //console.log(dataArray);
-      this.pushData({fc:dataArray,
-      pushTime:this.pushFcTime,
-      fileNameTime:this.fileNameTime});
+      // console.log(dataArray);
+
+      this.finalData = {fc:dataArray,
+          pushTime:this.pushFcTime,
+          fileNameTime:this.fileNameTime}
+
+      return this.finalData;
+    },
+    checkErrorData(data){// 检查字符串是否有错误
+       this.warningErrorText = '';
+       let isPassCheck = true;
+       for(let text of this.errorTextArr){
+         if(data.indexOf(text) !== -1){
+           this.warningErrorText +='['+text+']';
+           isPassCheck = false;
+         }
+       }
+       return isPassCheck;
     },
     pushData(data){
       /* 上传预报数据 */
@@ -245,6 +280,27 @@ export default {
       .catch((error)=>{
         console.log(error);
       });
+    },
+    checkPushData(openDialog,isPush){// 发布数据警告对话框
+      if(openDialog){
+        this.convertPushData();// 转换数据
+        let isPassCheck = this.checkErrorData(JSON.stringify(this.finalData.fc)); // 检查是否有错
+        if(isPassCheck){
+          this.pushData(this.finalData); // 通过检测直接发送
+        }else{
+          this.warningPushDialog = true; // 弹出错误对话框
+        }
+        // TODO 检查数据是否正确，异常时弹窗
+      }
+      else{
+        if(isPush){// 发送预报
+          this.pushData(this.finalData);
+        }
+        else{ // 不发送预报
+          // 直接返回
+        }
+        this.warningPushDialog = false;
+      }
     },
     trigerLocalResolve(){
       this.isResolveLocal = !this.isResolveLocal
@@ -355,7 +411,9 @@ export default {
   .time-view-tabs div{
     color: red;
   }
-
+  .warningData{
+    color: red;
+  }
   .popup-top {
   width: 100%;
   opacity: .8;
