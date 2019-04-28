@@ -177,6 +177,23 @@ export default {
           this.popUpText = '获取成功';
           this.topPopup = true;
           this.posterList = res.data;
+          let canImportMissing = false;
+          let isMissing = false;
+          for(let iCode of this.posterList){
+            console.log(iCode.fcCode.length);
+            if(iCode.fcCode.length<10){
+              isMissing = true;
+              let canImport = window.confirm('检测到数据缺失，您确认需要导入不完整的数据吗？');
+              if(canImport){
+                canImportMissing = true;
+                break;
+              }else{
+                canImportMissing = false;
+                break;
+              }
+            }
+          }
+          if(isMissing&&!canImportMissing) return;// 如果数据缺失并且不能导入则返回取消
 
           if(this.posterList.length== 3){
             [this.text,this.text2,this.text3] = this.posterList.map(v=>v.fcCode);
