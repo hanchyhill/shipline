@@ -10,8 +10,7 @@
     <mu-select-field v-model="methodGetData" label="数据获取方式">
       <mu-menu-item value="ftp" title="海洋共享FTP"></mu-menu-item>
       <mu-menu-item value="http" title="海洋共享HTTP"></mu-menu-item>
-      <!--<mu-menu-item value="remoteDB" title="远程数据库"/>
-      <mu-menu-item value="localDB" title="本地数据库"/>-->
+      <mu-menu-item value="remoteDB" title="远程数据仓库"/>
     </mu-select-field>
     <mu-date-picker class="shift-date-picker" autoOk container="inline" hintText="选择日期" v-model="selectedDate"></mu-date-picker>
     <mu-dropDown-menu :value="hourUTC" @change="hourChange">
@@ -231,8 +230,8 @@ export default {
         if(ele!=-1){
           this[dataTimeName[eIndex]] = this.posterList[ele].fcCode;
           // this.fcTime[eIndex] = this.posterList[ele].time;
-          this.fcTime[eIndex] = this.initDate[0].replace(/-/g,'') + this.initDate[1] +
-                                '000' + ((i + 1) * 24).toString() + '00';
+          // this.fcTime[eIndex] = this.initDate[0].replace(/-/g,'') + this.initDate[1] +
+          //                       '000' + ((eIndex + 1) * 24).toString() + '00';
         }
       });
     },
