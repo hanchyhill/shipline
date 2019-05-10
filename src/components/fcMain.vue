@@ -10,7 +10,7 @@
     <mu-select-field v-model="methodGetData" label="数据获取方式">
       <mu-menu-item value="ftp" title="海洋共享FTP"></mu-menu-item>
       <mu-menu-item value="http" title="海洋共享HTTP"></mu-menu-item>
-      <mu-menu-item value="remoteDB" title="远程数据仓库"/>
+      <mu-menu-item value="local" title="远程数据仓库"/>
     </mu-select-field>
     <mu-date-picker class="shift-date-picker" autoOk container="inline" hintText="选择日期" v-model="selectedDate"></mu-date-picker>
     <mu-dropDown-menu :value="hourUTC" @change="hourChange">
@@ -174,12 +174,17 @@ export default {
           return;
         }
         else{
-          this.popUpText = '获取成功';
-          this.topPopup = true;
+          if(res.data.warning){// 警告
+            this.popUpText = res.data.errorText;
+            this.topPopup = true;
+          }else{
+            this.popUpText = '获取成功';
+            this.topPopup = true;
+          }
           this.posterList = res.data;
           let canImportMissing = false;
           let isMissing = false;
-          for(let iCode of this.posterList){
+          for(let iCode of this.posterList){// 缺失数据判断
             console.log(iCode.fcCode.length);
             if(iCode.fcCode.length<10){
               isMissing = true;
@@ -199,7 +204,7 @@ export default {
             [this.text,this.text2,this.text3] = this.posterList.map(v=>v.fcCode);
             this.fcTime = this.posterList.map(v=>v.time);
           }
-          else{
+          else{// 如果少于3个时次则触发时次选择选项框
             //console.log(posterList.length);
             this.selectTime=[-1,-1,-1];
             this.selectDialog = true;

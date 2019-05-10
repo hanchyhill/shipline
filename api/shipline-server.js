@@ -25,7 +25,7 @@ apiRouter.route('/:apiName')
       readRemoteFc()
         .then(data=>{
           res.set('Content-Type', 'text/html');
-          
+
           res.send(data);
           //console.log(data);
         })
@@ -40,6 +40,19 @@ apiRouter.route('/:apiName')
         case 'http':
           getAllData(req.query.time,req.query.fc)
           .then(resData=>{
+            let isAllEmpty = resData.every(item=>item.empty);
+            if(isAllEmpty){
+              throw {"error":true,
+                empty:true,
+                "errorInfo":"micaps站点信息全部缺失",
+                "errorText":"micaps站点信息全部缺失"};
+            }
+            let isMissing =resData.includes(item=>item.missing);
+            if(isMissing){
+              resData.warning = true;
+              resData.errorInfo="部分站点缺失";
+              resData.errorText="部分站点缺失";
+            }
             res.send(JSON.stringify(resData));
           })
           .catch(error=>{
@@ -47,13 +60,36 @@ apiRouter.route('/:apiName')
             res.send(JSON.stringify(error));
           })
           break;
-        
+
         case 'ftp':
           //console.log('server');
            getFtpData(req.query.time,req.query.fc)
           .then(resData=>{
             res.send(JSON.stringify(resData));
             return;
+          })
+          .catch(error=>{
+            console.log(error);
+            res.send(JSON.stringify(error));
+          })
+          break;
+        case 'local':
+          getAllData(req.query.time,req.query.fc,'local')
+          .then(resData=>{
+            let isAllEmpty = resData.every(item=>item.empty);
+            if(isAllEmpty){
+              throw {"error":true,
+                empty:true,
+                "errorInfo":"micaps站点信息全部缺失",
+                "errorText":"micaps站点信息全部缺失"};
+            }
+            let isMissing =resData.includes(item=>item.missing);
+            if(isMissing){
+              resData.warning = true;
+              resData.errorInfo="部分站点缺失";
+              resData.errorText="部分站点缺失";
+            }
+            res.send(JSON.stringify(resData));
           })
           .catch(error=>{
             console.log(error);
@@ -68,7 +104,7 @@ apiRouter.route('/:apiName')
       next();
 
   }
-  
+
 });
 
 apiRouter.route('/:apiName') //post数据
@@ -79,7 +115,7 @@ apiRouter.route('/:apiName') //post数据
   //console.log(req.body);
   let fcdata = req.body.fcdata;
   let fileTime = fcdata.fileNameTime;
-  
+
 
   let resData = {
     info:'OK'
@@ -95,7 +131,7 @@ apiRouter.route('/:apiName') //post数据
   catch(err){
     console.log(err);
   }
-  
+
 
   ejsHTML(fcdata)
   .then(html=>{
@@ -113,7 +149,7 @@ apiRouter.route('/:apiName') //post数据
     console.log(err.message);
     res.send(JSON.stringify(err));
   })
-  
+
 });
 
 
