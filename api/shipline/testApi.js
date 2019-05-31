@@ -6,10 +6,10 @@ const util = require('util');
 // const pReadFile = util.promisify(fs.readFile);
 
 let selectedSID = ['02001','02002','02003','02004','02005','02006','02007','02009','03005','03003'];
-let expURL = ['http://10.1.64.146/sea/seaReport/inshore/download.jsp?format=micaps&type=2&data_id=SEVP_NMC_ROFC_SFER_EME_ACES_L89_P9_',
+let expURL = [//'http://10.1.64.146/sea/seaReport/inshore/download.jsp?format=micaps&type=2&data_id=SEVP_NMC_ROFC_SFER_EME_ACES_L89_P9_',
               'http://10.1.64.146/sea/seaReport/ocean/download.jsp?format=micaps&type=2&data_id=SEVP_NMC_ROFC_SFER_EME_ACWP_L89_P9_',
               'http://10.1.64.146/sea/seaReport/opensea/download.jsp?format=micaps&type=2&data_id=SEVP_NMC_ROFC_SFER_EME_AESA_L89_P9_'];
-let filesPrefix = ['SEVP_NMC_ROFC_SFER_EME_ACES_L89_P9_',
+let filesPrefix = [//'SEVP_NMC_ROFC_SFER_EME_ACES_L89_P9_',
                 'SEVP_NMC_ROFC_SFER_EME_ACWP_L89_P9_',
                 'SEVP_NMC_ROFC_SFER_EME_AESA_L89_P9_'];
 
@@ -19,7 +19,7 @@ const pReadFile = async (file)=>{
       if(err){
         resolve('');
       }else{
-        resolve(data);
+        resolve(data.toString());
       }
     })
   })
@@ -162,14 +162,16 @@ function axiosAll(urlList=[]){
     axios.all(urlList.map(url=>axios.get(url)))
     .then(
       axios.spread(
-      (res1,res2,res3)=>{
-        resolve([res1.data,res2.data,res3.data])
+      //(res1,res2,res3)=>{
+      (res1,res2)=>{
+        resolve([res1.data,res2.data])
       }
     ))
     .catch(error=>{
       if(error.response){
         //存在请求，但是服务器的返回一个状态码
         //他们都在2xx之外
+        console.error('获取URL错误');
         console.log(error.response.data);
         console.log(error.response.status);
         console.log(error.response.headers);
@@ -188,6 +190,7 @@ function axiosAll(urlList=[]){
           "errorText":"后台获取文件时设置请求时触发错误"
         })
         }
+      console.error('axios配置');
       console.log(error.config);
     })
   })
@@ -202,7 +205,7 @@ async function getData(time,method='remote') {
     return url + time;
   });
   let fileList = filesPrefix.map(prefix=>path.resolve(__dirname,'../../../data/oceanShare/',prefix+time+'.txt'));
-  if(method=='local'){
+  if(method=='local'){// 本地仓库
     try{
       dataList = await readLocal(fileList)
     }catch(err){
@@ -224,12 +227,18 @@ async function getData(time,method='remote') {
 
 
   // dataList = resList.map(resList.data);
-  for(let i=0; i<dataList.length; i++){
-    fs.writeFile(fileList[i],dataList[i],err=>{
-      console.error(err);
-    });
+  if(method=='remote'){
+    for(let i=0; i<dataList.length; i++){
+      fs.writeFile(fileList[i],dataList[i],err=>{
+        if(err){
+          console.error('写入错误');
+          console.error(err);
+        }
+      });
+    }
   }
   try{
+    // console.log(dataList);
     dataList.map(data =>micapsViewer(data).fcInfo)//错误处理
     .forEach(data=>{totalFc.push(...data)});
   }

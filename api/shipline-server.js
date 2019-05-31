@@ -30,7 +30,7 @@ apiRouter.route('/:apiName')
           //console.log(data);
         })
         .catch(err=>{
-          console.log(err);
+          console.log('line33: Err'+err);
           res.status(500).send('获取北航线预报错误!');
         })
       break;
@@ -56,7 +56,8 @@ apiRouter.route('/:apiName')
             res.send(JSON.stringify(resData));
           })
           .catch(error=>{
-            console.log(error);
+            console.log('line59: Err');
+            console.log(JSON.stringify(error));
             res.send(JSON.stringify(error));
           })
           break;
@@ -69,7 +70,7 @@ apiRouter.route('/:apiName')
             return;
           })
           .catch(error=>{
-            console.log(error);
+            console.error(JSON.stringify(error));
             res.send(JSON.stringify(error));
           })
           break;
@@ -92,7 +93,7 @@ apiRouter.route('/:apiName')
             res.send(JSON.stringify(resData));
           })
           .catch(error=>{
-            console.log(error);
+            console.error(error);
             res.send(JSON.stringify(error));
           })
           break;
@@ -129,7 +130,7 @@ apiRouter.route('/:apiName') //post数据
     }});
   }
   catch(err){
-    console.log(err);
+    console.log('line132: Err'+err);
   }
 
 
@@ -142,11 +143,11 @@ apiRouter.route('/:apiName') //post数据
   }
   )
   .then(info=>{
-    console.log(info);
+    console.log('line145: Err'+info);
     res.send(JSON.stringify(resData));
   })
   .catch(err=>{
-    console.log(err.message);
+    console.error(err.message);
     res.send(JSON.stringify(err));
   })
 
@@ -156,7 +157,7 @@ apiRouter.route('/:apiName') //post数据
 apiServer.use('/api', apiRouter);
 apiServer.listen(10072, function (err) {
   if (err) {
-    console.log(err)
+    console.error(err)
     return
   }
   console.log('Listening at http://localhost:' + (10072) + '\n')

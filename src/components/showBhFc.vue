@@ -1,7 +1,7 @@
 <template>
 <div>
   <mu-raised-button label="12121页面(延迟10分钟)" secondary target="_blank" rel="noopener noreferrer"
-  href="http://10.12.12.221:8080/special/fcst/show_bh.htm"></mu-raised-button>
+  href="http://111.230.218.100:8080/special/fcst/show_bh.htm"></mu-raised-button>
   <!--
   <mu-raised-button label="图1" secondary target="_blank" rel="noopener noreferrer"
   href="http://10.12.12.221:8080/special/Fcst/bhnewyb.htm#"></mu-raised-button>
