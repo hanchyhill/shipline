@@ -185,7 +185,7 @@ export default {
           let canImportMissing = false;
           let isMissing = false;
           for(let iCode of this.posterList){// 缺失数据判断
-            console.log(iCode.fcCode.length);
+            // console.log(iCode.fcCode.length);
             if(iCode.fcCode.length<10){
               isMissing = true;
               let canImport = window.confirm('检测到数据缺失，您确认需要导入不完整的数据吗？');
@@ -295,13 +295,13 @@ export default {
       .then( (res)=>{
         this.popUpText = '上传成功，页面已生成';
         this.topPopup = true;
-        console.log(res.data);
+        // console.log(res.data);
         // this.postFeedBackDialog = !this.postFeedBackDialog; // 打开弹窗
         // window.open("http://10.12.12.221:8080/special/Fcst/bh.html");
         this.$router.push('showfc');
       })
       .catch((error)=>{
-        console.log(error);
+        console.error(error);
       });
     },
     checkPushData(openDialog,isPush){// 发布数据检查，警告对话框
@@ -365,7 +365,7 @@ export default {
     },//
     fileNameTime(){
       let fcTime = this.pushFcTime.replace(/\//g,'');
-      console.log(fcTime);
+      // console.log(fcTime);
       let fileName = fcTime.substring(2,8) + (fcTime.charAt(9)=='6'?'08':'20');
       return fileName;
     },//

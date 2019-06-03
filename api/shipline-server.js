@@ -143,7 +143,7 @@ apiRouter.route('/:apiName') //post数据
   }
   )
   .then(info=>{
-    console.log('line145: Err'+info);
+    console.log(info.toString());
     res.send(JSON.stringify(resData));
   })
   .catch(err=>{
