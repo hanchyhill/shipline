@@ -157,9 +157,27 @@ function filterSID(item){
   return selectedSID.includes(item[0]);
 }
 
+function url2postOption(url='http://10.1.64.146/sea/seaReport/ocean/download.jsp?data_id=SEVP_NMC_ROFC_SFER_EME_ACWP_L89_P9_20200819060002400&format=micaps&type=2'){
+  let matchArr = url.match(/(^.*?)\?(.*?$)/);
+  if(matchArr){
+    let originUrl = matchArr[1];
+    let postBody = matchArr[2];
+    let option = {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: postBody,   // 用 qs 将js对象转换为字符串 'name=edward&age=25'
+      url: originUrl,
+    };
+    // console.log(option);
+    return option;
+  }else{
+    throw new TypeError('无法匹配的URL'+url);
+  }
+}
+
 function axiosAll(urlList=[]){
-  return new Promise((resolve,rejcet)=>{
-    axios.all(urlList.map(url=>axios.get(url)))
+  return new Promise((resolve,reject)=>{
+    axios.all(urlList.map(url=>axios(url2postOption(url))))
     .then(
       axios.spread(
       //(res1,res2,res3)=>{
@@ -213,7 +231,8 @@ async function getData(time,method='remote') {
     }
   }else{
     try{
-      dataList = await axiosAll(fullURL);
+      // console.log(fullURL);
+      dataList = await axiosAll(fullURL).catch(err=>{throw err});
     }catch(err){
       throw err;
     }
